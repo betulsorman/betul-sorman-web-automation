@@ -2,37 +2,35 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import utils.WaitUtils;
 
 public class HomePage {
 
-    private WebDriver driver;
+    private final WebDriver driver;
+
+    // Locators
+    private final By companyMenu = By.xpath("//a[contains(@class, 'nav-link') and text()='Company']");
+    private final By careersLink = By.xpath("//a[text()='Careers']");
 
     // Constructor
     public HomePage(WebDriver driver) {
         this.driver = driver;
     }
 
-    // Methods
+    // Actions
     public void open() {
         driver.get("https://useinsider.com/");
     }
 
     public boolean isHomePageOpened() {
-        return driver.getTitle().contains("Insider");
+        return driver.getTitle().toLowerCase().contains("insider");
     }
 
-    // Navigate to CareersPage
-    public CareersPage navigateToCareers() {
-        // Menüyü ve 'Careers' linkini tıklıyoruz
-        click(By.xpath("//nav//a[text()='Company']"));
-        click(By.xpath("//nav//a[text()='Careers']"));
-        return new CareersPage(driver);
+    public void clickCompanyMenu() {
+        WaitUtils.waitForClickability(companyMenu, 10).click();
     }
 
-    // Helper method for click actions
-    private void click(By locator) {
-        WebElement element = driver.findElement(locator);
-        element.click();
+    public void clickCareersLink() {
+        WaitUtils.waitForClickability(careersLink, 10).click();
     }
 }
