@@ -24,7 +24,7 @@ public class DriverFactory {
                 WebDriverManager.firefoxdriver().setup();
                 driver.set(new FirefoxDriver());
             }
-            default -> throw new IllegalArgumentException("Tanımsız browser tipi: " + browser);
+            default -> throw new IllegalArgumentException("Undefined browser type: " + browser);
         }
 
         getDriver().manage().window().maximize();

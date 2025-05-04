@@ -27,7 +27,7 @@ public class TestListener implements ITestListener {
 
         String browserName = (annotation != null)
                 ? annotation.browser().toString()
-                : "CHROME"; // varsayılan olarak Chrome gösterilir
+                : "CHROME";
 
         test.assignDevice(browserName);
 

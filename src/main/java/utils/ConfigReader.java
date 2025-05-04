@@ -15,7 +15,7 @@ public class ConfigReader {
             properties.load(fis);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("config.properties dosyası okunamadı.");
+            throw new RuntimeException("Could not read the config.properties file.");
         }
     }
 

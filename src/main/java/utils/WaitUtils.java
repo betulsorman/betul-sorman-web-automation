@@ -4,9 +4,11 @@ import drivers.DriverFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.util.List;
 
 public final class WaitUtils {
 
@@ -40,5 +42,15 @@ public final class WaitUtils {
 
     public static void waitForAlert(int timeoutSeconds) {
         getWait(timeoutSeconds).until(ExpectedConditions.alertIsPresent());
+    }
+
+    public static List<WebElement> waitForVisibilityOfAll(By locator, int timeoutSeconds) {
+        return getWait(timeoutSeconds).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
+    }
+
+    public static void hoverOverElement(By locator) {
+        WebElement element = getWait(10).until(ExpectedConditions.visibilityOfElementLocated(locator));
+        Actions actions = new Actions(DriverFactory.getDriver());
+        actions.moveToElement(element).perform();
     }
 }
