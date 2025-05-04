@@ -3,6 +3,8 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.ConfigReader;
 import utils.WaitUtils;
@@ -23,6 +25,14 @@ public class QaJobsPage {
     private final By activeDropdownOptions = By.cssSelector(".select2-container--open li.select2-results__option");
 
     private final By jobListItems = By.cssSelector("div.position-list-item");
+
+
+    private final By positionTitle = By.cssSelector(".position-title");
+    private final By positionDepartment = By.cssSelector(".position-department");
+    private final By positionLocation = By.cssSelector(".position-location");
+
+    private final By viewRoleButton = By.cssSelector(".position-location");
+
 
     public QaJobsPage(WebDriver driver) {
         this.driver = driver;
@@ -80,4 +90,44 @@ public class QaJobsPage {
     public boolean isJobListVisible() {
         return !driver.findElements(jobListItems).isEmpty();
     }
+
+    public List<WebElement> getJobListItems() {
+        return driver.findElements(jobListItems);
+    }
+
+    public String getJobPosition(WebElement jobCard) {
+        return jobCard.findElement(positionTitle).getText().trim();
+    }
+
+    public String getJobDepartment(WebElement jobCard) {
+        return jobCard.findElement(positionDepartment).getText().trim();
+    }
+
+    public String getJobLocation(WebElement jobCard) {
+        return jobCard.findElement(positionLocation).getText().trim();
+    }
+
+    public void clickFirstViewRoleButton() {
+        WebElement firstJob = driver.findElements(By.cssSelector("div.position-list-item")).get(0);
+        firstJob.findElement(By.tagName("a")).click();
+    }
+
+    public void hoverOverFirstJobCard() {
+        By jobCardLocator = By.cssSelector("div.position-list-item");
+
+        WebElement firstJobCard = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(jobCardLocator));
+
+        new Actions(driver).moveToElement(firstJobCard).perform();
+    }
+
+    public void waitForJobListToUpdate() {
+        By firstJobTitle = By.cssSelector("div.position-list-item .position-title");
+
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(driver -> {
+            List<WebElement> titles = driver.findElements(firstJobTitle);
+            return titles.stream().anyMatch(el -> el.getText().contains("Quality Assurance"));
+        });
+    }
+
 }
