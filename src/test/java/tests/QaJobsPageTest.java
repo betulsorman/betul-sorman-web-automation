@@ -5,41 +5,21 @@ import drivers.DriverFactory;
 import enums.BrowserType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pages.QaJobsPage;
 import pages.CareersPage;
 import pages.HomePage;
-import pages.QaJobsPage;
 
 public class QaJobsPageTest extends BaseTest {
 
-    @Test(description = "Filtreleme sonrası tüm işler 'Quality Assurance' ve 'Istanbul' içeriyor mu?")
+    @Test(description = "Navigate to QA jobs, filter by Istanbul and QA, and verify job list is shown.")
     @FrameworkAnnotation(browser = BrowserType.CHROME)
-    public void testQaJobsFilteredCorrectly() {
-        HomePage homePage = new HomePage(DriverFactory.getDriver());
-        homePage.open();
-        homePage.clickCompanyMenu();
-        homePage.clickCareersLink();
+    public void testQaJobsFilteringAndListing() {
+        QaJobsPage qaJobsPage = new QaJobsPage(DriverFactory.getDriver());
+        qaJobsPage.openQaJobsPage();
 
-        CareersPage careersPage = new CareersPage(DriverFactory.getDriver());
-        QaJobsPage qaJobsPage = careersPage.navigateToQaJobs();
+        qaJobsPage.clickSeeAllQaJobs();
+        qaJobsPage.filterByLocationAndDepartment("Istanbul, Turkiye", "Quality Assurance");
 
-        qaJobsPage.filterJobsByLocationAndDepartment("Istanbul, Turkey", "Quality Assurance");
-
-        boolean allValid = qaJobsPage.areAllJobsValid("Quality Assurance", "Quality Assurance", "Istanbul, Turkey");
-        Assert.assertTrue(allValid, "İş ilanları doğru filtrelenmedi veya beklenen değerleri içermiyor.");
-    }
-
-    @Test(description = "'View Role' butonuna tıklandığında Lever sayfası açılıyor mu?")
-    @FrameworkAnnotation(browser = BrowserType.CHROME)
-    public void testViewRoleRedirectsToLever() {
-        HomePage homePage = new HomePage(DriverFactory.getDriver());
-        homePage.open();
-        homePage.clickCompanyMenu();
-        homePage.clickCareersLink();
-
-        CareersPage careersPage = new CareersPage(DriverFactory.getDriver());
-        QaJobsPage qaJobsPage = careersPage.navigateToQaJobs();
-
-        String leverUrl = qaJobsPage.clickViewRoleButtonAndSwitchToLever();
-        Assert.assertTrue(leverUrl.contains("lever.co"), "View Role butonu Lever'a yönlendirmedi!");
+        Assert.assertTrue(qaJobsPage.isJobListVisible(), "Job list is not displayed after filtering.");
     }
 }

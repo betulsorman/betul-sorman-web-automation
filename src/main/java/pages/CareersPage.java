@@ -28,4 +28,5 @@ public class CareersPage {
     public boolean isLifeAtInsiderBlockVisible() {
         return WaitUtils.waitForVisibility(lifeAtInsiderBlock, 10).isDisplayed();
     }
+
 }

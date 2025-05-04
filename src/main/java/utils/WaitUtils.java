@@ -53,4 +53,13 @@ public final class WaitUtils {
         Actions actions = new Actions(DriverFactory.getDriver());
         actions.moveToElement(element).perform();
     }
+
+    public static void waitUntilTextIsPresentInElements(By locator, String text, int timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(timeoutInSeconds));
+        wait.until(driver -> {
+            List<WebElement> elements = driver.findElements(locator);
+            return elements.stream().anyMatch(el -> el.getText().trim().equalsIgnoreCase(text));
+        });
+    }
+
 }
