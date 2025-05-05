@@ -57,6 +57,10 @@ public class QaJobsPage {
             e.printStackTrace();
         }
 
+//        new WebDriverWait(driver, Duration.ofSeconds(10)).until(
+//        ExpectedConditions.presenceOfElementLocated(jobListItems)
+//        );
+
         WebElement dropdownTrigger = WaitUtils.waitForClickability(filterLocator, 10);
         dropdownTrigger.click();
 
