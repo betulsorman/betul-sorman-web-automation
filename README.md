@@ -55,3 +55,6 @@ Run all tests from the terminal using:
 
 ```bash
 mvn clean test
+```
+
+![web-automation-screen-record.gif](screen-recordings/web-automation-screen-record.gif)
