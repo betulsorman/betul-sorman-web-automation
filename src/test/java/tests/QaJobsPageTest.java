@@ -1,39 +1,36 @@
 package tests;
 
-import annotations.FrameworkAnnotation;
 import drivers.DriverFactory;
-import enums.BrowserType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.QaJobsPage;
 
-
-import java.time.Duration;
 import java.util.List;
+
 
 public class QaJobsPageTest extends BaseTest {
 
-    @Test(description = "Navigate to QA jobs, filter by Istanbul and QA, and verify job list is shown.")
-    @FrameworkAnnotation(browser = BrowserType.CHROME)
-    public void testQaJobsFilteringAndListing() {
-        QaJobsPage qaJobsPage = new QaJobsPage(DriverFactory.getDriver());
-        qaJobsPage.openQaJobsPage();
+    private QaJobsPage qaJobsPage;
 
+    @BeforeMethod
+    public void openQaJobsPage() {
+        qaJobsPage = new QaJobsPage(DriverFactory.getDriver());
+        qaJobsPage.openQaJobsPage();
+    }
+
+    @Test(description = "Filter QA jobs by Istanbul & QA and verify job list appears")
+    public void shouldShowFilteredJobsList() {
         qaJobsPage.clickSeeAllQaJobs();
         qaJobsPage.filterByLocationAndDepartment("Istanbul, Turkiye", "Quality Assurance");
-
         Assert.assertTrue(qaJobsPage.isJobListVisible(), "Job list is not displayed after filtering.");
     }
 
-    @Test(description = "Verify all jobs are filtered correctly by QA and Istanbul")
-    public void verifyJobListFilteredCorrectly() {
-        QaJobsPage qaJobsPage = new QaJobsPage(DriverFactory.getDriver());
-
-        qaJobsPage.openQaJobsPage();
-
+    @Test(description = "Ensure all jobs are filtered by QA and Istanbul")
+    public void shouldValidateFilteredJobAttributes() {
         qaJobsPage.clickSeeAllQaJobs();
         qaJobsPage.filterByLocationAndDepartment("Istanbul, Turkiye", "Quality Assurance");
 
@@ -60,37 +57,18 @@ public class QaJobsPageTest extends BaseTest {
     @Test(description = "Verify clicking 'View Role' redirects to Lever application page")
     public void verifyRedirectToLeverApplication() {
         WebDriver driver = DriverFactory.getDriver();
-        QaJobsPage qaJobsPage = new QaJobsPage(DriverFactory.getDriver());
-
-        qaJobsPage.openQaJobsPage();
         qaJobsPage.clickSeeAllQaJobs();
         qaJobsPage.filterByLocationAndDepartment("Istanbul, Turkiye", "Quality Assurance");
 
         String originalWindow = driver.getWindowHandle();
 
         qaJobsPage.waitForJobListToUpdate();
-
         qaJobsPage.hoverOverFirstJobCard();
-
-
         qaJobsPage.clickFirstViewRoleButton();
-
-        new WebDriverWait(driver, Duration.ofSeconds(10)).until(d -> d.getWindowHandles().size() > 1);
-
-        for (String windowHandle : driver.getWindowHandles()) {
-            if (!windowHandle.equals(originalWindow)) {
-                driver.switchTo().window(windowHandle);
-                break;
-            }
-        }
-
-        new WebDriverWait(driver, Duration.ofSeconds(10)).until(d -> d.getCurrentUrl().contains("lever.co"));
+        qaJobsPage.switchToNewWindow(originalWindow);
 
         String currentUrl = driver.getCurrentUrl();
-        System.out.println("Redirected URL: " + currentUrl);
-
         Assert.assertTrue(currentUrl.contains("lever.co"),
-                "❌ Not redirected to Lever: " + currentUrl);
+                "Expected to be redirected to Lever, but got: " + currentUrl);
     }
-
 }

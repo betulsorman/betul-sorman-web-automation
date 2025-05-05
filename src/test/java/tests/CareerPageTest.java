@@ -1,9 +1,12 @@
 package tests;
 
 import annotations.FrameworkAnnotation;
+import constants.NavBarData;
 import drivers.DriverFactory;
 import enums.BrowserType;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import pages.CareersPage;
 import pages.HomePage;
@@ -12,21 +15,23 @@ import java.util.List;
 
 public class CareerPageTest extends BaseTest {
 
-    @Test(description = "Verify navigation bar menus are listed, click on Company > Careers, and check career page blocks.")
-    @FrameworkAnnotation(browser = BrowserType.CHROME)
-    public void testTopNavBarItemsAndCareerPageSections() {
-        HomePage homePage = new HomePage(DriverFactory.getDriver());
-        homePage.open();
+    protected HomePage homePage;
 
+    @BeforeMethod
+    public void openHomePage(){
+        homePage = new HomePage(DriverFactory.getDriver());
+        homePage.open();
+    }
+
+    @Test(description = "Verify navigation bar menus are listed, click on Company > Careers, and check career page blocks.")
+    public void testTopNavBarItemsAndCareerPageSections() {
         List<String> actualNavItems = homePage.getTopNavBarItemsText();
-        List<String> expectedNavItems = List.of("Why Insider", "Platform", "Solutions", "Customers", "Resources", "Company", "Explore Insider");
-        Assert.assertTrue(actualNavItems.containsAll(expectedNavItems), "Some navigation bar items are missing.");
+        Assert.assertTrue(actualNavItems.containsAll(NavBarData.TOP_NAV_ITEMS), "Some navigation bar items are missing.");
 
         homePage.hoverTopNavBarItem("Company");
 
         List<String> actualDropdownItems = homePage.getCompanyDropdownItemsText();
-        List<String> expectedDropdownItems = List.of("About Us", "Newsroom", "Partnerships", "Integrations", "Careers", "Contact Us");
-        Assert.assertTrue(actualDropdownItems.containsAll(expectedDropdownItems), "Some Company dropdown items are missing.");
+        Assert.assertTrue(actualDropdownItems.containsAll(NavBarData.COMPANY_DROPDOWN_ITEMS), "Some Company dropdown items are missing.");
 
         homePage.clickItemFromCompanyDropdown("Careers");
 

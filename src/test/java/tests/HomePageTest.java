@@ -1,47 +1,61 @@
 package tests;
 
 import annotations.FrameworkAnnotation;
+import constants.NavBarData;
 import drivers.DriverFactory;
 import enums.BrowserType;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import pages.HomePage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomePageTest extends BaseTest {
 
-    @Test(description = "Verify the Insider homepage is displayed successfully")
-    @FrameworkAnnotation(browser = BrowserType.CHROME)
-    public void testHomePageLoadsSuccessfully() {
-        HomePage homePage = new HomePage(DriverFactory.getDriver());
+    protected HomePage homePage;
+
+    @BeforeMethod
+    public void openHomePage(){
+        homePage = new HomePage(DriverFactory.getDriver());
         homePage.open();
+    }
+
+    @Test(description = "Verify the Insider homepage is displayed successfully")
+    public void testHomePageLoadsSuccessfully() {
         Assert.assertTrue(homePage.isHomePageOpened(), "Homepage could not be loaded!");
     }
 
     @Test(description = "Verify navigation bar menus are listed and click on Company.")
-    @FrameworkAnnotation(browser = BrowserType.CHROME)
     public void testTopNavBarItemsAndClickCompany() {
-        HomePage homePage = new HomePage(DriverFactory.getDriver());
-        homePage.open();
-
         List<String> actualNavItems = homePage.getTopNavBarItemsText();
-        List<String> expectedNavItems = List.of("Why Insider", "Platform", "Solutions", "Customers", "Resources", "Company", "Explore Insider");
-
-        Assert.assertTrue(actualNavItems.containsAll(expectedNavItems), "Navigation menü öğeleri eksik!");
+        Assert.assertTrue(
+                actualNavItems.containsAll(NavBarData.TOP_NAV_ITEMS),
+                "Missing top nav items: " + getMissingItems(NavBarData.TOP_NAV_ITEMS, actualNavItems)
+        );
 
         homePage.hoverTopNavBarItem("Company");
 
         List<String> actualDropdownItems = homePage.getCompanyDropdownItemsText();
-        List<String> expectedDropdownItems = List.of(
-                "About Us", "Newsroom", "Partnerships", "Integrations", "Careers", "Contact Us"
+        Assert.assertTrue(
+                actualDropdownItems.containsAll(NavBarData.COMPANY_DROPDOWN_ITEMS),
+                "Missing Company dropdown items: " + getMissingItems(NavBarData.COMPANY_DROPDOWN_ITEMS, actualDropdownItems)
         );
-
-        Assert.assertTrue(actualDropdownItems.containsAll(expectedDropdownItems), "Not all expected submenus are present!");
 
         homePage.clickItemFromCompanyDropdown("Careers");
 
-        String url = DriverFactory.getDriver().getCurrentUrl().toLowerCase();
-        Assert.assertTrue(url.contains("career"), "Redirection to Careers page failed! Actual: " + url);
+        String currentUrl = DriverFactory.getDriver().getCurrentUrl().toLowerCase();
+        Assert.assertTrue(
+                currentUrl.contains("career"),
+                "Navigation to Careers page failed. Actual URL: " + currentUrl
+        );
+    }
+
+    private List<String> getMissingItems(List<String> expected, List<String> actual) {
+        return expected.stream()
+                .filter(item -> !actual.contains(item))
+                .collect(Collectors.toList());
     }
 }
