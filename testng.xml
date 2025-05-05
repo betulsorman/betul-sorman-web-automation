@@ -2,7 +2,9 @@
 <suite name="Insider Test Suite">
     <test name="Insider Tests">
         <classes>
-            <class name="tests.InsiderCareerTest"/>
+            <class name="tests.CareerPageTest"/>
+            <class name="tests.HomePageTest"/>
+            <class name="tests.QaJobsPageTest"/>
         </classes>
     </test>
 </suite>

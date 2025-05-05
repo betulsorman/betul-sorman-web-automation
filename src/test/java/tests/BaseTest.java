@@ -15,7 +15,7 @@ import java.util.List;
 @Listeners(TestListener.class)
 public class BaseTest {
 
-    private final By cookieAcceptButton = By.id("wt-cli-accept-all-btn"); // ID doğruysa
+    private final By cookieAcceptButton = By.id("wt-cli-accept-all-btn");
 
     @BeforeMethod
     public void setUp() {

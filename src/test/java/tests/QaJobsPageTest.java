@@ -65,8 +65,7 @@ public class QaJobsPageTest extends BaseTest {
         String originalWindow = driver.getWindowHandle();
 
         qaJobsPage.waitForJobListToUpdate();
-        qaJobsPage.hoverOverFirstJobCard();
-        qaJobsPage.clickFirstViewRoleButton();
+        qaJobsPage.hoverAndClickViewRoleButton();
         qaJobsPage.switchToNewWindow(originalWindow);
 
         String currentUrl = driver.getCurrentUrl();
