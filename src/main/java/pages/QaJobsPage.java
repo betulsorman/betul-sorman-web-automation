@@ -55,7 +55,7 @@ public class QaJobsPage {
     private void selectFromDropdown(By filterLocator, String valueToSelect) {
 
         try {
-            Thread.sleep(10000); // Sayfa ve JS içeriklerin yüklenmesi için sabit 10 saniye bekle
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -76,7 +76,6 @@ public class QaJobsPage {
         List<WebElement> options = driver.findElements(activeDropdownOptions);
         for (WebElement option : options) {
             String text = option.getText().trim();
-            System.out.println("Option text: " + text);
             if (text.equalsIgnoreCase(valueToSelect)) {
                 option.click();
                 return;
@@ -122,7 +121,7 @@ public class QaJobsPage {
     }
 
     public void waitForJobListToUpdate() {
-        By firstJobTitle = By.cssSelector("div.position-list-item .position-title");
+        By firstJobTitle = By.cssSelector(".position-title");
 
         new WebDriverWait(driver, Duration.ofSeconds(10)).until(driver -> {
             List<WebElement> titles = driver.findElements(firstJobTitle);
@@ -142,5 +141,12 @@ public class QaJobsPage {
 
         new WebDriverWait(driver, Duration.ofSeconds(10)).until(d -> d.getCurrentUrl().contains("lever.co"));
 
+    }
+
+    public void waitUntilAllJobsContainText(String expectedText) {
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(driver -> {
+            List<WebElement> jobList = getJobListItems();
+            return jobList.stream().allMatch(job -> getJobPosition(job).contains(expectedText));
+        });
     }
 }

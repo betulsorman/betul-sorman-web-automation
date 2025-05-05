@@ -34,6 +34,8 @@ public class QaJobsPageTest extends BaseTest {
         qaJobsPage.clickSeeAllQaJobs();
         qaJobsPage.filterByLocationAndDepartment("Istanbul, Turkiye", "Quality Assurance");
 
+        qaJobsPage.waitUntilAllJobsContainText("Quality Assurance");
+
         List<WebElement> jobList = qaJobsPage.getJobListItems();
 
         for (WebElement job : jobList) {
@@ -49,7 +51,7 @@ public class QaJobsPageTest extends BaseTest {
                     "Position mismatch: " + position);
             Assert.assertTrue(department.contains("Quality Assurance"),
                     "Department mismatch: " + department);
-            Assert.assertTrue(location.contains("Istanbul, Turkey"),
+            Assert.assertTrue(location.contains("Istanbul, Turkiye"),
                     "Location mismatch: " + location);
         }
     }
